@@ -1,6 +1,6 @@
 package com.tenyon.web.domain.dto.user;
 
-import com.tenyon.web.common.constant.BmsConstant;
+import com.tenyon.common.constant.AmiConstant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -17,11 +17,11 @@ public class UserRegisterDTO implements Serializable {
     @Schema(description = "账号")
     private String userAccount;
 
-    @Pattern(regexp = BmsConstant.REGEX_PASSWORD, message = "密码格式错误(8-18位含数字字母)")
+    @Pattern(regexp = AmiConstant.REGEX_PASSWORD, message = "密码格式错误(8-18位含数字字母)")
     @Schema(description = "首次输入密码")
     private String userPassword;
 
-    @Pattern(regexp = BmsConstant.REGEX_PASSWORD, message = "密码格式错误(8-18位含数字字母)")
+    @Pattern(regexp = AmiConstant.REGEX_PASSWORD, message = "密码格式错误(8-18位含数字字母)")
     @Schema(description = "二次输入密码")
     private String checkPassword;
 
