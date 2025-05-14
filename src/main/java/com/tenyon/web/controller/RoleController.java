@@ -83,7 +83,7 @@ public class RoleController {
 
     //    @SaCheckPermission(value = {"system:role:list"}, mode = SaMode.OR)
     @Operation(summary = "获取角色列表")
-    @GetMapping("/getRolePage")
+    @PostMapping("/getRolePage")
     public RtnData<Page<Role>> getRolePage(@RequestBody RoleQueryDTO roleQueryDTO) {
         long current = roleQueryDTO.getCurrent();
         long size = roleQueryDTO.getPageSize();

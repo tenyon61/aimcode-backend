@@ -121,10 +121,12 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
         ThrowUtils.throwIf(menuQueryDTO == null, new BusinessException(ErrorCode.PARAMS_ERROR, "请求参数为空"));
 
         String menuName = menuQueryDTO.getMenuName();
+        String perms = menuQueryDTO.getPerms();
         QueryWrapper<Menu> queryWrapper = new QueryWrapper<>();
         String sortField = menuQueryDTO.getSortField();
         String sortOrder = menuQueryDTO.getSortOrder();
         queryWrapper.like(StrUtil.isNotBlank(menuName), "menuName", menuName);
+        queryWrapper.like(StrUtil.isNotBlank(perms), "perms", perms);
         queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals("ascend"), sortField);
         return queryWrapper;
     }

@@ -19,6 +19,9 @@ public class MenuQueryDTO extends PageReq implements Serializable {
     @Schema(description = "菜单名称")
     private String menuName;
 
+    @Schema(description = "权限标识")
+    private String perms;
+
     @Serial
     private static final long serialVersionUID = 1L;
 

@@ -4,15 +4,17 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
  * 菜单权限表
+ *
  * @TableName menu
  */
-@TableName(value ="menu")
+@TableName(value = "menu")
 @Data
 public class Menu implements Serializable {
     /**
@@ -64,12 +66,12 @@ public class Menu implements Serializable {
     /**
      * 菜单状态（0显示 1隐藏）
      */
-    private String visible;
+    private Integer visible;
 
     /**
      * 菜单状态（0正常 1停用）
      */
-    private String status;
+    private Integer status;
 
     /**
      * 权限标识

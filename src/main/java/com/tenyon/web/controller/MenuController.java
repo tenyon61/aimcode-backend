@@ -74,7 +74,7 @@ public class MenuController {
 
     //    @SaCheckPermission(value = {"system:menu:list"}, mode = SaMode.OR)
     @Operation(summary = "获取菜单列表")
-    @GetMapping("/getMenuPage")
+    @PostMapping("/getMenuPage")
     public RtnData<Page<Menu>> getMenuPage(@RequestBody MenuQueryDTO menuQueryDTO) {
         long current = menuQueryDTO.getCurrent();
         long size = menuQueryDTO.getPageSize();
