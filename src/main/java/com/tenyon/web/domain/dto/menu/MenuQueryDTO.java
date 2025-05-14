@@ -1,0 +1,25 @@
+package com.tenyon.web.domain.dto.menu;
+
+import com.tenyon.common.domain.vo.req.PageReq;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+import java.io.Serial;
+import java.io.Serializable;
+
+@EqualsAndHashCode(callSuper = true)
+@Schema(description = "菜单查询请求体")
+@Data
+public class MenuQueryDTO extends PageReq implements Serializable {
+
+    @Schema(description = "id")
+    private Long id;
+
+    @Schema(description = "菜单名称")
+    private String menuName;
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+}

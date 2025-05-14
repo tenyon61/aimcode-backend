@@ -78,3 +78,78 @@ http://localhost:8072/doc.html
 ## 📝 许可证
 
 [MIT License](LICENSE)
+
+## RBAC 权限管理说明
+
+### 主要功能
+
+1. 基于 SaToken 实现的权限管理系统，支持：
+   - 角色继承（树形结构）
+   - 权限注解自动校验 (@SaCheckPermission)
+   - 角色注解校验 (@SaCheckRole)
+   - 细粒度权限控制
+
+### 核心组件
+
+1. 角色管理：
+
+   - 支持角色的 CRUD 操作
+   - 支持角色树形继承（父子角色关系）
+   - 支持角色禁用/启用
+
+2. 菜单权限：
+
+   - 菜单(Menu)实体支持权限标识(perms)
+   - 支持菜单权限分配到角色
+   - 支持权限自动校验
+
+3. 用户角色：
+   - 支持用户分配多个角色
+   - 自动合并用户所有角色的权限
+
+### 主要 API
+
+1. 角色管理：
+
+   - 获取角色列表：GET /api/rbac/role/list
+   - 创建角色：POST /api/rbac/role/add
+   - 分配角色菜单权限：POST /api/rbac/role/assignMenu
+
+2. 权限管理：
+
+   - 获取当前用户所有权限：GET /api/rbac/permission/getCurrentUserPermissions
+   - 获取当前用户所有角色：GET /api/rbac/role/getCurrentUserRoles
+
+3. 用户角色管理：
+   - 给用户分配角色：POST /api/rbac/user/assignRoles
+   - 获取用户角色 ID 列表：GET /api/rbac/user/roles/{userId}
+
+### 使用示例
+
+1. 在控制器方法上添加权限验证注解：
+
+```java
+// 验证当前用户必须有指定权限才能访问方法
+@SaCheckPermission(value = {"system:role:list"}, mode = SaMode.OR)
+@GetMapping("/role/list")
+public RtnData<List<Role>> listRoles() {
+    // 方法实现...
+}
+
+// 验证当前用户必须有指定角色才能访问
+@SaCheckRole(UserConstant.ADMIN_ROLE_KEY)
+@PostMapping("/add")
+public RtnData<Long> add() {
+    // 方法实现...
+}
+```
+
+2. 动态获取用户权限：
+
+```java
+// 在业务代码中获取当前用户的权限列表
+menuService.getUserPermissions(userId);
+
+// 在业务代码中获取当前用户的角色列表
+roleService.getUserRoleKeys(userId);
+```

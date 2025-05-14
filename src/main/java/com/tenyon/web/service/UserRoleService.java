@@ -3,11 +3,31 @@ package com.tenyon.web.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.tenyon.web.domain.entity.UserRole;
 
-/**
-* @author tenyon
-* @description 针对表【user_role(用户和角色关联表)】的数据库操作Service
-* @createDate 2025-05-14 11:15:08
-*/
-public interface UserRoleService extends IService<UserRole> {
+import java.util.List;
 
+/**
+ * 用户角色服务接口
+ *
+ * @author tenyon
+ * @date 2025-05-14
+ */
+public interface UserRoleService extends IService<UserRole> {
+    
+    /**
+     * 给用户分配角色
+     *
+     * @param userId  用户ID
+     * @param roleIds 角色ID集合
+     * @return 操作结果
+     */
+    boolean assignUserRoles(Long userId, List<Long> roleIds);
+    
+    /**
+     * 获取用户角色ID列表
+     *
+     * @param userId 用户ID
+     * @return 角色ID集合
+     */
+    List<Long> getUserRoleIds(Long userId);
+    
 }

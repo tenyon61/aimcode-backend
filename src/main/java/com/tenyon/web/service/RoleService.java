@@ -1,13 +1,35 @@
 package com.tenyon.web.service;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.tenyon.web.domain.dto.role.RoleQueryDTO;
 import com.tenyon.web.domain.entity.Role;
 
+import java.util.List;
+import java.util.Set;
+
 /**
-* @author tenyon
-* @description 针对表【role(角色信息表)】的数据库操作Service
-* @createDate 2025-05-14 11:15:08
-*/
+ * 角色服务接口
+ *
+ * @author tenyon
+ * @date 2025-05-14
+ */
 public interface RoleService extends IService<Role> {
 
+    /**
+     * 获取用户的所有角色标识
+     *
+     * @param userId 用户ID
+     * @return 角色标识集合
+     */
+    List<String> getUserRoleKeys(Long userId);
+
+    /**
+     * 获取查询条件
+     *
+     * @param roleQueryDTO 角色查询请求
+     * @return sql 查询条件
+     */
+    QueryWrapper<Role> getQueryWrapper(RoleQueryDTO roleQueryDTO);
 }

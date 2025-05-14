@@ -86,8 +86,8 @@ public class UserController {
 
     @SaCheckRole(UserConstant.ADMIN_ROLE_KEY)
     @Operation(summary = "根据 id 获取用户（仅管理员）")
-    @GetMapping("/get")
-    public RtnData<User> getUserById(long id) {
+    @GetMapping("/get/{id}")
+    public RtnData<User> getUserById(@PathVariable long id) {
         if (id <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
@@ -107,26 +107,26 @@ public class UserController {
     @SaCheckRole(UserConstant.ADMIN_ROLE_KEY)
     @Operation(summary = "分页获取用户列表（仅管理员）")
     @PostMapping("/getUserPage")
-    public RtnData<Page<User>> getUserPage(@RequestBody UserQueryDTO userQueryRequest) {
-        long current = userQueryRequest.getCurrent();
-        long size = userQueryRequest.getPageSize();
+    public RtnData<Page<User>> getUserPage(@RequestBody UserQueryDTO userQueryDTO) {
+        long current = userQueryDTO.getCurrent();
+        long size = userQueryDTO.getPageSize();
         Page<User> userPage = userService.page(new Page<>(current, size),
-                userService.getQueryWrapper(userQueryRequest));
+                userService.getQueryWrapper(userQueryDTO));
         return RtnData.success(userPage);
     }
 
     @Operation(summary = "分页获取用户封装列表")
     @PostMapping("/getUserVOPage")
-    public RtnData<Page<UserVO>> getUserVOPage(@RequestBody UserQueryDTO userQueryRequest) {
-        if (userQueryRequest == null) {
+    public RtnData<Page<UserVO>> getUserVOPage(@RequestBody UserQueryDTO userQueryDTO) {
+        if (userQueryDTO == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        long current = userQueryRequest.getCurrent();
-        long size = userQueryRequest.getPageSize();
+        long current = userQueryDTO.getCurrent();
+        long size = userQueryDTO.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
         Page<User> userPage = userService.page(new Page<>(current, size),
-                userService.getQueryWrapper(userQueryRequest));
+                userService.getQueryWrapper(userQueryDTO));
         Page<UserVO> userVOPage = new Page<>(current, size, userPage.getTotal());
         List<UserVO> userVO = userService.getUserVOList(userPage.getRecords());
         userVOPage.setRecords(userVO);
