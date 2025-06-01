@@ -10,8 +10,8 @@
     </parent>
 
     <groupId>com.tenyon</groupId>
-    <artifactId>amicode-backend</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <artifactId>aimcode-backend</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,9 +20,9 @@
         <skipTests>true</skipTests>
 
         <hutool.version>5.8.37</hutool.version>
-        <knife4j.version>4.6.0</knife4j.version>
+        <knife4j.version>4.4.0</knife4j.version>
         <mybatis-plus.version>3.5.12</mybatis-plus.version>
-        <sa-token.version>1.42.0</sa-token.version>
+        <sa-token.version>1.43.0</sa-token.version>
         <minio.version>8.5.14</minio.version>
         <caffeine.version>3.1.8</caffeine.version>
     </properties>
@@ -94,7 +94,7 @@
             <version>${mybatis-plus.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.xingfudeshi</groupId>
+            <groupId>com.github.xiaoymin</groupId>
             <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
             <version>${knife4j.version}</version>
         </dependency>

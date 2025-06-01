@@ -3,22 +3,21 @@ package com.tenyon.web.controller;
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.tenyon.common.constant.AmiConstant;
-import com.tenyon.common.constant.UserConstant;
-import com.tenyon.common.domain.vo.resp.RtnData;
-import com.tenyon.common.exception.BusinessException;
-import com.tenyon.common.exception.ErrorCode;
-import com.tenyon.common.exception.ThrowUtils;
-import com.tenyon.web.domain.dto.user.UserAddDTO;
-import com.tenyon.web.domain.dto.user.UserQueryDTO;
-import com.tenyon.web.domain.dto.user.UserUpdateDTO;
-import com.tenyon.web.domain.dto.user.UserUpdateMyDTO;
+import com.tenyon.common.base.constant.AimConstant;
+import com.tenyon.common.base.constant.UserConstant;
+import com.tenyon.common.base.response.RtnData;
+import com.tenyon.common.base.exception.BusinessException;
+import com.tenyon.common.base.exception.ErrorCode;
+import com.tenyon.common.base.exception.ThrowUtils;
+import com.tenyon.web.domain.dto.user.*;
 import com.tenyon.web.domain.entity.User;
+import com.tenyon.web.domain.vo.user.LoginUserVO;
 import com.tenyon.web.domain.vo.user.UserVO;
 import com.tenyon.web.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +39,49 @@ public class UserController {
     @Resource
     private UserService userService;
 
+    // region 授权
+
+    @Operation(summary = "用户登录")
+    @PostMapping("/login")
+    public RtnData<LoginUserVO> login(@RequestBody @Valid UserLoginDTO userLoginDTO) {
+        if (userLoginDTO == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        String userAccount = userLoginDTO.getUserAccount();
+        String userPassword = userLoginDTO.getUserPassword();
+        LoginUserVO loginUserVO = userService.login(userAccount, userPassword);
+        return RtnData.success(loginUserVO);
+    }
+
+    @Operation(summary = "用户注册")
+    @PostMapping("/register")
+    public RtnData<Long> register(@RequestBody @Valid UserRegisterDTO userRegisterDTO) {
+        if (userRegisterDTO == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        String userAccount = userRegisterDTO.getUserAccount();
+        String userPassword = userRegisterDTO.getUserPassword();
+        String checkPassword = userRegisterDTO.getCheckPassword();
+        long userId = userService.register(userAccount, userPassword, checkPassword);
+        return RtnData.success(userId);
+    }
+
+    @Operation(summary = "用户注销")
+    @PostMapping("/logout")
+    public RtnData<Boolean> logout() {
+        boolean res = userService.logout();
+        ThrowUtils.throwIf(!res, ErrorCode.OPERATION_ERROR);
+        return RtnData.success(res);
+    }
+
+    @Operation(summary = "获取当前登录用户")
+    @GetMapping("/getLoginUser")
+    public RtnData<LoginUserVO> getLoginUser() {
+        User loginUser = userService.getLoginUser();
+        return RtnData.success(userService.getLoginUserVO(loginUser));
+    }
+    // endregion
+
     // region 增删改查
 
     @SaCheckRole(UserConstant.ADMIN_ROLE_KEY)
@@ -53,7 +95,7 @@ public class UserController {
         BeanUtils.copyProperties(userAddDTO, user);
         // 默认密码 11111
         String defaultPassword = "11111";
-        String encryptPassword = DigestUtils.md5DigestAsHex((AmiConstant.ENCRYPT_SALT + defaultPassword).getBytes());
+        String encryptPassword = DigestUtils.md5DigestAsHex((AimConstant.ENCRYPT_SALT + defaultPassword).getBytes());
         user.setUserPassword(encryptPassword);
 
         boolean res = userService.save(user);
@@ -156,7 +198,7 @@ public class UserController {
     @PutMapping("/resetPwd/{id}")
     public RtnData<Boolean> resetPwd(@PathVariable long id) {
         User user = userService.getById(id);
-        user.setUserPassword(DigestUtils.md5DigestAsHex((AmiConstant.ENCRYPT_SALT + "11111").getBytes()));
+        user.setUserPassword(DigestUtils.md5DigestAsHex((AimConstant.ENCRYPT_SALT + "11111").getBytes()));
         boolean res = userService.updateById(user);
         ThrowUtils.throwIf(!res, ErrorCode.OPERATION_ERROR, "密码重置失败");
         return RtnData.success(true);

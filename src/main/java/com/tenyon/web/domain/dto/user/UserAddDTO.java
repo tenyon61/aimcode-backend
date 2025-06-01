@@ -1,6 +1,6 @@
 package com.tenyon.web.domain.dto.user;
 
-import com.tenyon.common.constant.AmiConstant;
+import com.tenyon.common.base.constant.AimConstant;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Pattern;
@@ -23,11 +23,11 @@ public class UserAddDTO implements Serializable {
     @Schema(description = "性别")
     private Integer sex;
 
-    @Pattern(regexp = AmiConstant.REGEX_EMAIL, message = "邮箱格式不正确")
+    @Pattern(regexp = AimConstant.REGEX_EMAIL, message = "邮箱格式不正确")
     @Schema(description = "邮箱")
     private String email;
 
-    @Pattern(regexp = AmiConstant.REGEX_PHONE, message = "手机号格式不正确")
+    @Pattern(regexp = AimConstant.REGEX_PHONE, message = "手机号格式不正确")
     @Schema(description = "手机号")
     private String phone;
 

@@ -59,10 +59,10 @@ http://localhost:8072/doc.html
 
 - 用户授权: `/api/auth/**`
 
-  - 登录: `/api/auth/login`
-  - 注册: `/api/auth/register`
-  - 注销: `/api/auth/logout`
-  - 获取当前用户: `/api/auth/getLoginUser`
+    - 登录: `/api/auth/login`
+    - 注册: `/api/auth/register`
+    - 注销: `/api/auth/logout`
+    - 获取当前用户: `/api/auth/getLoginUser`
 
 - 用户管理: `/api/user/**`
 

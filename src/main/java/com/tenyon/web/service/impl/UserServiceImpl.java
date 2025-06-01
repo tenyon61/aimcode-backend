@@ -8,12 +8,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.tenyon.common.constant.AmiConstant;
-import com.tenyon.common.constant.UserConstant;
-import com.tenyon.common.exception.BusinessException;
-import com.tenyon.common.exception.ErrorCode;
-import com.tenyon.common.exception.ThrowUtils;
-import com.tenyon.common.utils.SqlUtils;
+import com.tenyon.common.base.constant.AimConstant;
+import com.tenyon.common.base.constant.UserConstant;
+import com.tenyon.common.base.exception.BusinessException;
+import com.tenyon.common.base.exception.ErrorCode;
+import com.tenyon.common.base.exception.ThrowUtils;
+import com.tenyon.common.base.utils.SqlUtils;
 import com.tenyon.web.domain.dto.user.UserQueryDTO;
 import com.tenyon.web.domain.entity.User;
 import com.tenyon.web.domain.enums.UserRoleEnum;
@@ -56,7 +56,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
                 throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号重复");
             }
             // 2.加密
-            String encryptPassword = DigestUtils.md5DigestAsHex((AmiConstant.ENCRYPT_SALT + userPassword).getBytes());
+            String encryptPassword = DigestUtils.md5DigestAsHex((AimConstant.ENCRYPT_SALT + userPassword).getBytes());
             // 3.插入数据
             User user = new User();
             user.setUserAccount(userAccount);
@@ -81,7 +81,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public LoginUserVO login(String userAccount, String userPassword) {
         // 1. 校验
         // 2. 加密
-        String encryptPassword = DigestUtils.md5DigestAsHex((AmiConstant.ENCRYPT_SALT + userPassword).getBytes());
+        String encryptPassword = DigestUtils.md5DigestAsHex((AimConstant.ENCRYPT_SALT + userPassword).getBytes());
         // 查询用户是否存在
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("userAccount", userAccount);

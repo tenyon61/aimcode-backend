@@ -1,6 +1,6 @@
 package com.tenyon.web.domain.dto.user;
 
-import com.tenyon.common.domain.vo.req.PageReq;
+import com.tenyon.common.base.request.PageRequest;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -11,7 +11,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = true)
 @Schema(description = "用户查询请求体")
 @Data
-public class UserQueryDTO extends PageReq implements Serializable {
+public class UserQueryDTO extends PageRequest implements Serializable {
 
     @Schema(description = "id")
     private Long id;
