@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tenyon.web.mapper.SysRoleMapper">
+
+    <resultMap id="BaseResultMap" type="com.tenyon.web.domain.entity.SysRole">
+        <id property="id" column="id"/>
+        <result property="roleName" column="roleName"/>
+        <result property="roleKey" column="roleKey"/>
+        <result property="roleSort" column="roleSort"/>
+        <result property="dataScope" column="dataScope"/>
+        <result property="menuCheckStrictly" column="menuCheckStrictly"/>
+        <result property="deptCheckStrictly" column="deptCheckStrictly"/>
+        <result property="status" column="status"/>
+        <result property="createUser" column="createUser"/>
+        <result property="createTime" column="createTime"/>
+        <result property="updateUser" column="updateUser"/>
+        <result property="updateTime" column="updateTime"/>
+        <result property="remark" column="remark"/>
+        <result property="isDelete" column="isDelete"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id
+        ,roleName,roleKey,roleSort,dataScope,menuCheckStrictly,
+        deptCheckStrictly,status,createUser,createTime,updateUser,
+        updateTime,remark,isDelete
+    </sql>
+</mapper>
