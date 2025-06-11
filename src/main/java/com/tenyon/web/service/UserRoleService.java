@@ -1,7 +1,7 @@
 package com.tenyon.web.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.tenyon.web.domain.entity.SysUserRole;
+import com.tenyon.web.domain.entity.UserRole;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
  * @author tenyon
  * @date 2025-05-14
  */
-public interface SysUserRoleService extends IService<SysUserRole> {
+public interface UserRoleService extends IService<UserRole> {
 
     /**
      * 给用户分配角色

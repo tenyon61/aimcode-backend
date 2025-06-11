@@ -8,22 +8,22 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 角色和菜单关联表
+ * 用户和角色关联表
  *
- * @TableName role_menu
+ * @TableName user_role
  */
-@TableName(value = "sys_role_menu")
+@TableName(value = "user_role")
 @Data
-public class SysRoleMenu implements Serializable {
+public class UserRole implements Serializable {
+    /**
+     * 用户ID
+     */
+    private Long userId;
+
     /**
      * 角色ID
      */
     private Long roleId;
-
-    /**
-     * 菜单ID
-     */
-    private Long menuId;
 
     @Serial
     @TableField(exist = false)

@@ -3,7 +3,7 @@ package com.tenyon.web.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.tenyon.web.domain.dto.role.RoleQueryDTO;
-import com.tenyon.web.domain.entity.SysRole;
+import com.tenyon.web.domain.entity.Role;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * @author tenyon
  * @date 2025-05-14
  */
-public interface SysRoleService extends IService<SysRole> {
+public interface RoleService extends IService<Role> {
 
     /**
      * 获取用户的所有角色标识
@@ -29,5 +29,5 @@ public interface SysRoleService extends IService<SysRole> {
      * @param roleQueryDTO 角色查询请求
      * @return sql 查询条件
      */
-    QueryWrapper<SysRole> getQueryWrapper(RoleQueryDTO roleQueryDTO);
+    QueryWrapper<Role> getQueryWrapper(RoleQueryDTO roleQueryDTO);
 }

@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.tenyon.web.mapper.SysMenuMapper">
+<mapper namespace="com.tenyon.web.mapper.MenuMapper">
 
-    <resultMap id="BaseResultMap" type="com.tenyon.web.domain.entity.SysMenu">
+    <resultMap id="BaseResultMap" type="com.tenyon.web.domain.entity.Menu">
         <id property="id" column="id"/>
         <result property="menuName" column="menuName"/>
         <result property="parentId" column="parentId"/>

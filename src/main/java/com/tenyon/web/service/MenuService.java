@@ -3,7 +3,7 @@ package com.tenyon.web.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.tenyon.web.domain.dto.menu.MenuQueryDTO;
-import com.tenyon.web.domain.entity.SysMenu;
+import com.tenyon.web.domain.entity.Menu;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
  * @author tenyon
  * @date 2025-05-14
  */
-public interface SysMenuService extends IService<SysMenu> {
+public interface MenuService extends IService<Menu> {
 
     /**
      * 根据用户ID查询权限集合
@@ -38,5 +38,5 @@ public interface SysMenuService extends IService<SysMenu> {
      * @param menuQueryDTO 菜单查询请求
      * @return
      */
-    QueryWrapper<SysMenu> getQueryWrapper(MenuQueryDTO menuQueryDTO);
+    QueryWrapper<Menu> getQueryWrapper(MenuQueryDTO menuQueryDTO);
 }

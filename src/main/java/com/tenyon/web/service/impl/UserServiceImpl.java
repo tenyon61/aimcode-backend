@@ -15,12 +15,12 @@ import com.tenyon.common.base.exception.ErrorCode;
 import com.tenyon.common.base.exception.ThrowUtils;
 import com.tenyon.common.base.utils.SqlUtils;
 import com.tenyon.web.domain.dto.user.UserQueryDTO;
-import com.tenyon.web.domain.entity.SysUser;
+import com.tenyon.web.domain.entity.User;
 import com.tenyon.web.domain.enums.UserRoleEnum;
 import com.tenyon.web.domain.vo.user.LoginUserVO;
 import com.tenyon.web.domain.vo.user.UserVO;
-import com.tenyon.web.mapper.SysUserMapper;
-import com.tenyon.web.service.SysUserService;
+import com.tenyon.web.mapper.UserMapper;
+import com.tenyon.web.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
 
     @Override
@@ -49,8 +49,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         synchronized (userAccount.intern()) {
             // 1.账户不能重复
-            LambdaQueryWrapper<SysUser> queryWrapper = Wrappers.lambdaQuery();
-            queryWrapper.eq(SysUser::getUserAccount, userAccount);
+            LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
+            queryWrapper.eq(User::getUserAccount, userAccount);
             long count = this.count(queryWrapper);
             if (count > 0) {
                 throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号重复");
@@ -58,23 +58,23 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             // 2.加密
             String encryptPassword = DigestUtils.md5DigestAsHex((AimConstant.ENCRYPT_SALT + userPassword).getBytes());
             // 3.插入数据
-            SysUser sysUser = new SysUser();
-            sysUser.setUserAccount(userAccount);
-            sysUser.setUserPassword(encryptPassword);
-            sysUser.setUserRole(UserRoleEnum.USER.getValue());
-            boolean res = this.save(sysUser);
+            User user = new User();
+            user.setUserAccount(userAccount);
+            user.setUserPassword(encryptPassword);
+            user.setUserRole(UserRoleEnum.USER.getValue());
+            boolean res = this.save(user);
             ThrowUtils.throwIf(!res, ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
-            return sysUser.getId();
+            return user.getId();
         }
     }
 
     @Transactional
     @Override
-    public Long register(SysUser sysUser) {
-        sysUser.setUserRole("user");
-        boolean res = this.save(sysUser);
+    public Long register(User user) {
+        user.setUserRole("user");
+        boolean res = this.save(user);
         ThrowUtils.throwIf(!res, ErrorCode.SYSTEM_ERROR, "注册失败，数据库错误");
-        return sysUser.getId();
+        return user.getId();
     }
 
     @Override
@@ -83,19 +83,19 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         // 2. 加密
         String encryptPassword = DigestUtils.md5DigestAsHex((AimConstant.ENCRYPT_SALT + userPassword).getBytes());
         // 查询用户是否存在
-        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("userAccount", userAccount);
         queryWrapper.eq("userPassword", encryptPassword);
-        SysUser sysUser = this.getOne(queryWrapper);
+        User user = this.getOne(queryWrapper);
         // 用户不存在
-        if (sysUser == null) {
+        if (user == null) {
             log.info("user login failed, account cannot match password");
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户不存在或密码错误");
         }
         // 3. 记录用户的登录态
-        StpUtil.login(sysUser.getId());
-        StpUtil.getSession().set(UserConstant.USER_LOGIN_STATE, sysUser);
-        return this.getLoginUserVO(sysUser);
+        StpUtil.login(user.getId());
+        StpUtil.getSession().set(UserConstant.USER_LOGIN_STATE, user);
+        return this.getLoginUserVO(user);
     }
 
     /**
@@ -104,7 +104,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @return
      */
     @Override
-    public SysUser getLoginUser() {
+    public User getLoginUser() {
         // 先判断是否已登录
         Object loginId = StpUtil.getLoginIdDefaultNull();
         ThrowUtils.throwIf(loginId == null, ErrorCode.NOT_LOGIN_ERROR);
@@ -114,7 +114,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 //        if (currentUser == null) {
 //            throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
 //        }
-        return (SysUser) StpUtil.getSession().get(UserConstant.USER_LOGIN_STATE);
+        return (User) StpUtil.getSession().get(UserConstant.USER_LOGIN_STATE);
     }
 
     @Override
@@ -126,12 +126,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public LoginUserVO getLoginUserVO(SysUser sysUser) {
-        if (sysUser == null) {
+    public LoginUserVO getLoginUserVO(User user) {
+        if (user == null) {
             return null;
         }
         LoginUserVO loginUserVO = new LoginUserVO();
-        BeanUtils.copyProperties(sysUser, loginUserVO);
+        BeanUtils.copyProperties(user, loginUserVO);
         // 组装token
         SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
         loginUserVO.setToken(tokenInfo.tokenValue);
@@ -139,25 +139,25 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public UserVO getUserVO(SysUser sysUser) {
-        if (sysUser == null) {
+    public UserVO getUserVO(User user) {
+        if (user == null) {
             return null;
         }
         UserVO userVO = new UserVO();
-        BeanUtils.copyProperties(sysUser, userVO);
+        BeanUtils.copyProperties(user, userVO);
         return userVO;
     }
 
     @Override
-    public List<UserVO> getUserVOList(List<SysUser> sysUserList) {
-        if (CollectionUtils.isEmpty(sysUserList)) {
+    public List<UserVO> getUserVOList(List<User> userList) {
+        if (CollectionUtils.isEmpty(userList)) {
             return new ArrayList<>();
         }
-        return sysUserList.stream().map(this::getUserVO).collect(Collectors.toList());
+        return userList.stream().map(this::getUserVO).collect(Collectors.toList());
     }
 
     @Override
-    public QueryWrapper<SysUser> getQueryWrapper(UserQueryDTO userQueryRequest) {
+    public QueryWrapper<User> getQueryWrapper(UserQueryDTO userQueryRequest) {
         if (userQueryRequest == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "请求参数为空");
         }
@@ -168,7 +168,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         String userRole = userQueryRequest.getUserRole();
         String sortField = userQueryRequest.getSortField();
         String sortOrder = userQueryRequest.getSortOrder();
-        QueryWrapper<SysUser> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(ObjectUtil.isNotEmpty(id), "id", id);
         queryWrapper.eq(StrUtil.isNotBlank(userAccount), "userAccount", userAccount);
         queryWrapper.eq(StrUtil.isNotBlank(userRole), "userRole", userRole);
@@ -179,21 +179,21 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
-    public SysUser getUserByMpOpenId(String mpOpenId) {
-        return lambdaQuery().eq(SysUser::getMpOpenId, mpOpenId).one();
+    public User getUserByMpOpenId(String mpOpenId) {
+        return lambdaQuery().eq(User::getMpOpenId, mpOpenId).one();
     }
 
     @Override
     public String login(Long uid) {
-        SysUser sysUser = this.getById(uid);
+        User user = this.getById(uid);
         // 用户不存在
-        if (sysUser == null) {
+        if (user == null) {
             log.info("user login failed, account cannot match password");
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户不存在或密码错误");
         }
         // 3. 记录用户的登录态
-        StpUtil.login(sysUser.getId());
-        StpUtil.getSession().set(UserConstant.USER_LOGIN_STATE, sysUser);
+        StpUtil.login(user.getId());
+        StpUtil.getSession().set(UserConstant.USER_LOGIN_STATE, user);
         SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
         return tokenInfo.tokenValue;
     }

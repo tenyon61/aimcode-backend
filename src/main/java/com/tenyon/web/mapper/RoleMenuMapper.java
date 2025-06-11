@@ -1,7 +1,7 @@
 package com.tenyon.web.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.tenyon.web.domain.entity.SysRoleMenu;
+import com.tenyon.web.domain.entity.RoleMenu;
 
 /**
  * @author tenyon
@@ -9,7 +9,7 @@ import com.tenyon.web.domain.entity.SysRoleMenu;
  * @createDate 2025-05-14 11:15:08
  * @Entity com.tenyon.web.domain.entity.sys.RoleMenu
  */
-public interface SysRoleMenuMapper extends BaseMapper<SysRoleMenu> {
+public interface RoleMenuMapper extends BaseMapper<RoleMenu> {
 
 }
 

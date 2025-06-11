@@ -7,9 +7,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
-@TableName(value = "sys_user")
+@TableName(value = "user")
 @Data
-public class SysUser implements Serializable {
+public class User implements Serializable {
     /**
      * 用户id
      */

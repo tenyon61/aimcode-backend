@@ -10,15 +10,15 @@ import com.tenyon.common.base.exception.ErrorCode;
 import com.tenyon.common.base.exception.ThrowUtils;
 import com.tenyon.common.base.utils.SqlUtils;
 import com.tenyon.web.domain.dto.menu.MenuQueryDTO;
-import com.tenyon.web.domain.entity.SysMenu;
-import com.tenyon.web.domain.entity.SysRole;
-import com.tenyon.web.domain.entity.SysRoleMenu;
-import com.tenyon.web.domain.entity.SysUserRole;
-import com.tenyon.web.mapper.SysMenuMapper;
-import com.tenyon.web.mapper.SysRoleMapper;
-import com.tenyon.web.mapper.SysRoleMenuMapper;
-import com.tenyon.web.mapper.SysUserRoleMapper;
-import com.tenyon.web.service.SysMenuService;
+import com.tenyon.web.domain.entity.Menu;
+import com.tenyon.web.domain.entity.Role;
+import com.tenyon.web.domain.entity.RoleMenu;
+import com.tenyon.web.domain.entity.UserRole;
+import com.tenyon.web.mapper.MenuMapper;
+import com.tenyon.web.mapper.RoleMapper;
+import com.tenyon.web.mapper.RoleMenuMapper;
+import com.tenyon.web.mapper.UserRoleMapper;
+import com.tenyon.web.service.MenuService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,17 +35,17 @@ import java.util.stream.Collectors;
  * @createDate 2025-05-14 11:15:07
  */
 @Service
-public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
-        implements SysMenuService {
+public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
+        implements MenuService {
 
     @Autowired
-    private SysUserRoleMapper sysUserRoleMapper;
+    private UserRoleMapper userRoleMapper;
 
     @Autowired
-    private SysRoleMenuMapper sysRoleMenuMapper;
+    private RoleMenuMapper roleMenuMapper;
 
     @Autowired
-    private SysRoleMapper sysRoleMapper;
+    private RoleMapper roleMapper;
 
     /**
      * 根据用户ID查询权限集合
@@ -70,8 +70,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
         Set<String> permissionSet = new HashSet<>();
         for (Long roleId : roleIds) {
             // 获取角色状态，确认角色是否可用
-            SysRole sysRole = sysRoleMapper.selectById(roleId);
-            if (sysRole != null && "0".equals(sysRole.getStatus()) && sysRole.getIsDelete() == 0) {
+            Role role = roleMapper.selectById(roleId);
+            if (role != null && "0".equals(role.getStatus()) && role.getIsDelete() == 0) {
                 // 获取角色的权限列表
                 List<String> rolePermissions = getRolePermissions(roleId, "0");
                 permissionSet.addAll(rolePermissions);
@@ -91,38 +91,38 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
     @Override
     public List<String> getRolePermissions(Long roleId, String status) {
         // 查询角色关联的菜单ID
-        LambdaQueryWrapper<SysRoleMenu> roleMenuQuery = new LambdaQueryWrapper<>();
-        roleMenuQuery.eq(SysRoleMenu::getRoleId, roleId);
-        List<SysRoleMenu> sysRoleMenus = sysRoleMenuMapper.selectList(roleMenuQuery);
+        LambdaQueryWrapper<RoleMenu> roleMenuQuery = new LambdaQueryWrapper<>();
+        roleMenuQuery.eq(RoleMenu::getRoleId, roleId);
+        List<RoleMenu> roleMenus = roleMenuMapper.selectList(roleMenuQuery);
 
-        if (sysRoleMenus.isEmpty()) {
+        if (roleMenus.isEmpty()) {
             return new ArrayList<>();
         }
 
         // 获取菜单ID列表
-        List<Long> menuIds = sysRoleMenus.stream()
-                .map(SysRoleMenu::getMenuId)
+        List<Long> menuIds = roleMenus.stream()
+                .map(RoleMenu::getMenuId)
                 .collect(Collectors.toList());
 
         // 查询菜单信息，获取权限标识
-        LambdaQueryWrapper<SysMenu> menuQuery = new LambdaQueryWrapper<>();
-        menuQuery.in(SysMenu::getId, menuIds)
-                .eq(StringUtils.isNotBlank(status), SysMenu::getStatus, status);
+        LambdaQueryWrapper<Menu> menuQuery = new LambdaQueryWrapper<>();
+        menuQuery.in(Menu::getId, menuIds)
+                .eq(StringUtils.isNotBlank(status), Menu::getStatus, status);
 
-        List<SysMenu> sysMenus = baseMapper.selectList(menuQuery);
-        return sysMenus.stream()
-                .filter(sysMenu -> StringUtils.isNotBlank(sysMenu.getPerms()))
-                .map(SysMenu::getPerms)
+        List<Menu> menus = baseMapper.selectList(menuQuery);
+        return menus.stream()
+                .filter(menu -> StringUtils.isNotBlank(menu.getPerms()))
+                .map(Menu::getPerms)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public QueryWrapper<SysMenu> getQueryWrapper(MenuQueryDTO menuQueryDTO) {
+    public QueryWrapper<Menu> getQueryWrapper(MenuQueryDTO menuQueryDTO) {
         ThrowUtils.throwIf(menuQueryDTO == null, new BusinessException(ErrorCode.PARAMS_ERROR, "请求参数为空"));
 
         String menuName = menuQueryDTO.getMenuName();
         String perms = menuQueryDTO.getPerms();
-        QueryWrapper<SysMenu> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<Menu> queryWrapper = new QueryWrapper<>();
         String sortField = menuQueryDTO.getSortField();
         String sortOrder = menuQueryDTO.getSortOrder();
         queryWrapper.like(StrUtil.isNotBlank(menuName), "menuName", menuName);
@@ -138,13 +138,13 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
      */
     private List<String> getAllPermissions() {
         // 查询所有正常状态的菜单
-        LambdaQueryWrapper<SysMenu> menuQuery = new LambdaQueryWrapper<>();
-        menuQuery.eq(SysMenu::getStatus, "0");
+        LambdaQueryWrapper<Menu> menuQuery = new LambdaQueryWrapper<>();
+        menuQuery.eq(Menu::getStatus, "0");
 
-        List<SysMenu> sysMenus = baseMapper.selectList(menuQuery);
-        return sysMenus.stream()
-                .filter(sysMenu -> StringUtils.isNotBlank(sysMenu.getPerms()))
-                .map(SysMenu::getPerms)
+        List<Menu> menus = baseMapper.selectList(menuQuery);
+        return menus.stream()
+                .filter(menu -> StringUtils.isNotBlank(menu.getPerms()))
+                .map(Menu::getPerms)
                 .collect(Collectors.toList());
     }
 
@@ -155,12 +155,12 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
      * @return 角色ID列表
      */
     private List<Long> getUserRoleIds(Long userId) {
-        LambdaQueryWrapper<SysUserRole> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SysUserRole::getUserId, userId);
+        LambdaQueryWrapper<UserRole> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserRole::getUserId, userId);
 
-        List<SysUserRole> sysUserRoles = sysUserRoleMapper.selectList(queryWrapper);
-        return sysUserRoles.stream()
-                .map(SysUserRole::getRoleId)
+        List<UserRole> userRoles = userRoleMapper.selectList(queryWrapper);
+        return userRoles.stream()
+                .map(UserRole::getRoleId)
                 .collect(Collectors.toList());
     }
 
@@ -172,28 +172,28 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu>
      */
     private boolean isAdmin(Long userId) {
         // 获取用户角色
-        LambdaQueryWrapper<SysUserRole> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SysUserRole::getUserId, userId);
-        List<SysUserRole> sysUserRoles = sysUserRoleMapper.selectList(queryWrapper);
+        LambdaQueryWrapper<UserRole> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserRole::getUserId, userId);
+        List<UserRole> userRoles = userRoleMapper.selectList(queryWrapper);
 
-        if (sysUserRoles.isEmpty()) {
+        if (userRoles.isEmpty()) {
             return false;
         }
 
         // 查询用户角色信息
-        List<Long> roleIds = sysUserRoles.stream()
-                .map(SysUserRole::getRoleId)
+        List<Long> roleIds = userRoles.stream()
+                .map(UserRole::getRoleId)
                 .collect(Collectors.toList());
 
-        LambdaQueryWrapper<SysRole> roleQuery = new LambdaQueryWrapper<>();
-        roleQuery.in(SysRole::getId, roleIds)
-                .eq(SysRole::getStatus, "0")
-                .eq(SysRole::getIsDelete, 0);
+        LambdaQueryWrapper<Role> roleQuery = new LambdaQueryWrapper<>();
+        roleQuery.in(Role::getId, roleIds)
+                .eq(Role::getStatus, "0")
+                .eq(Role::getIsDelete, 0);
 
-        List<SysRole> sysRoles = sysRoleMapper.selectList(roleQuery);
+        List<Role> roles = roleMapper.selectList(roleQuery);
         // 检查是否有管理员角色
-        for (SysRole sysRole : sysRoles) {
-            if (UserConstant.ADMIN_ROLE_KEY.equals(sysRole.getRoleKey())) {
+        for (Role role : roles) {
+            if (UserConstant.ADMIN_ROLE_KEY.equals(role.getRoleKey())) {
                 return true;
             }
         }

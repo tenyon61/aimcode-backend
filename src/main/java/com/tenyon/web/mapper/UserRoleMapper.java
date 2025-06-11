@@ -1,7 +1,7 @@
 package com.tenyon.web.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.tenyon.web.domain.entity.SysUserRole;
+import com.tenyon.web.domain.entity.UserRole;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @date 2025-05-14
  */
 @Mapper
-public interface SysUserRoleMapper extends BaseMapper<SysUserRole> {
+public interface UserRoleMapper extends BaseMapper<UserRole> {
 }
 
 

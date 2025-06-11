@@ -2,9 +2,9 @@ package com.tenyon.web.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.tenyon.web.domain.entity.SysUserRole;
-import com.tenyon.web.mapper.SysUserRoleMapper;
-import com.tenyon.web.service.SysUserRoleService;
+import com.tenyon.web.domain.entity.UserRole;
+import com.tenyon.web.mapper.UserRoleMapper;
+import com.tenyon.web.service.UserRoleService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
  * @createDate 2025-05-14 11:15:08
  */
 @Service
-public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUserRole>
-        implements SysUserRoleService {
+public class UserRoleServiceImpl extends ServiceImpl<UserRoleMapper, UserRole>
+        implements UserRoleService {
 
     /**
      * 给用户分配角色
@@ -32,8 +32,8 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
     @Transactional(rollbackFor = Exception.class)
     public boolean assignUserRoles(Long userId, List<Long> roleIds) {
         // 先移除用户的所有角色
-        LambdaQueryWrapper<SysUserRole> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SysUserRole::getUserId, userId);
+        LambdaQueryWrapper<UserRole> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserRole::getUserId, userId);
         this.remove(queryWrapper);
 
         // 如果roleIds为空，则只是清空用户角色，不分配新角色
@@ -42,15 +42,15 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
         }
 
         // 批量插入用户角色关系
-        List<SysUserRole> sysUserRoles = new ArrayList<>();
+        List<UserRole> userRoles = new ArrayList<>();
         for (Long roleId : roleIds) {
-            SysUserRole sysUserRole = new SysUserRole();
-            sysUserRole.setUserId(userId);
-            sysUserRole.setRoleId(roleId);
-            sysUserRoles.add(sysUserRole);
+            UserRole userRole = new UserRole();
+            userRole.setUserId(userId);
+            userRole.setRoleId(roleId);
+            userRoles.add(userRole);
         }
 
-        return this.saveBatch(sysUserRoles);
+        return this.saveBatch(userRoles);
     }
 
     /**
@@ -61,12 +61,12 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
      */
     @Override
     public List<Long> getUserRoleIds(Long userId) {
-        LambdaQueryWrapper<SysUserRole> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(SysUserRole::getUserId, userId);
-        List<SysUserRole> sysUserRoles = this.list(queryWrapper);
+        LambdaQueryWrapper<UserRole> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UserRole::getUserId, userId);
+        List<UserRole> userRoles = this.list(queryWrapper);
 
-        return sysUserRoles.stream()
-                .map(SysUserRole::getRoleId)
+        return userRoles.stream()
+                .map(UserRole::getRoleId)
                 .collect(Collectors.toList());
     }
 }

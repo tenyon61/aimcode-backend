@@ -10,8 +10,8 @@ import com.tenyon.common.base.exception.ErrorCode;
 import com.tenyon.common.base.exception.ThrowUtils;
 import com.tenyon.common.base.response.RtnData;
 import com.tenyon.web.domain.dto.menu.MenuQueryDTO;
-import com.tenyon.web.domain.entity.SysMenu;
-import com.tenyon.web.service.SysMenuService;
+import com.tenyon.web.domain.entity.Menu;
+import com.tenyon.web.service.MenuService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,28 +31,28 @@ import java.util.List;
 public class MenuController {
 
     @Autowired
-    private SysMenuService sysMenuService;
+    private MenuService menuService;
 
     @SaCheckRole(UserConstant.ADMIN_ROLE_KEY)
     @Operation(summary = "创建菜单")
     @PostMapping("/add")
-    public RtnData<Long> addMenu(@RequestBody SysMenu sysMenu) {
-        if (sysMenu == null) {
+    public RtnData<Long> addMenu(@RequestBody Menu menu) {
+        if (menu == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        boolean res = sysMenuService.save(sysMenu);
+        boolean res = menuService.save(menu);
         ThrowUtils.throwIf(!res, ErrorCode.OPERATION_ERROR);
-        return RtnData.success(sysMenu.getId());
+        return RtnData.success(menu.getId());
     }
 
     @SaCheckRole(UserConstant.ADMIN_ROLE_KEY)
     @Operation(summary = "更新菜单")
     @PutMapping("/update")
-    public RtnData<Boolean> updateMenu(@RequestBody SysMenu sysMenu) {
-        if (sysMenu == null || sysMenu.getId() == null) {
+    public RtnData<Boolean> updateMenu(@RequestBody Menu menu) {
+        if (menu == null || menu.getId() == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        boolean res = sysMenuService.updateById(sysMenu);
+        boolean res = menuService.updateById(menu);
         ThrowUtils.throwIf(!res, ErrorCode.OPERATION_ERROR);
         return RtnData.success(true);
     }
@@ -64,7 +64,7 @@ public class MenuController {
         if (id == null || id <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        boolean res = sysMenuService.removeById(id);
+        boolean res = menuService.removeById(id);
         ThrowUtils.throwIf(!res, ErrorCode.OPERATION_ERROR);
         return RtnData.success(true);
     }
@@ -72,23 +72,23 @@ public class MenuController {
     //    @SaCheckPermission(value = {"system:menu:list"}, mode = SaMode.OR)
     @Operation(summary = "获取菜单列表")
     @PostMapping("/getMenuPage")
-    public RtnData<Page<SysMenu>> getMenuPage(@RequestBody MenuQueryDTO menuQueryDTO) {
+    public RtnData<Page<Menu>> getMenuPage(@RequestBody MenuQueryDTO menuQueryDTO) {
         long current = menuQueryDTO.getCurrent();
         long size = menuQueryDTO.getPageSize();
-        Page<SysMenu> menuPage = sysMenuService.page(new Page<>(current, size), sysMenuService.getQueryWrapper(menuQueryDTO));
+        Page<Menu> menuPage = menuService.page(new Page<>(current, size), menuService.getQueryWrapper(menuQueryDTO));
         return RtnData.success(menuPage);
     }
 
     //    @SaCheckPermission(value = {"system:menu:query"}, mode = SaMode.OR)
     @Operation(summary = "获取菜单详情")
     @GetMapping("get/{id}")
-    public RtnData<SysMenu> getMenuById(@PathVariable long id) {
+    public RtnData<Menu> getMenuById(@PathVariable long id) {
         if (id <= 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
-        SysMenu sysMenu = sysMenuService.getById(id);
-        ThrowUtils.throwIf(sysMenu == null, ErrorCode.NOT_FOUND_ERROR);
-        return RtnData.success(sysMenu);
+        Menu menu = menuService.getById(id);
+        ThrowUtils.throwIf(menu == null, ErrorCode.NOT_FOUND_ERROR);
+        return RtnData.success(menu);
     }
 
     @SaCheckLogin
@@ -97,7 +97,7 @@ public class MenuController {
     public RtnData<List<String>> getCurrentUserPermissions() {
         // 获取当前登录用户ID
         Long userId = StpUtil.getLoginIdAsLong();
-        List<String> permissions = sysMenuService.getUserPermissions(userId);
+        List<String> permissions = menuService.getUserPermissions(userId);
         return RtnData.success(permissions);
     }
 }

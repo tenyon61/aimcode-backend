@@ -19,10 +19,10 @@ SET
 FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for sys_user
+-- Table structure for user
 -- ----------------------------
-DROP TABLE IF EXISTS `sys_user`;
-CREATE TABLE `sys_user`
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE `user`
 (
     `id`            bigint                                                        NOT NULL AUTO_INCREMENT COMMENT 'id',
     `userAccount`   varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '账号',
@@ -51,13 +51,13 @@ CREATE TABLE `sys_user`
 ) ENGINE = InnoDB AUTO_INCREMENT = 1877314116692004867 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '系统-用户表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
--- Records of sys_user
+-- Records of user
 -- ----------------------------
-INSERT INTO `sys_user`
+INSERT INTO `user`
 VALUES (1, 'admin', '492a65bef0ab2fac75758f004f3eaf35', '', 'mpOpenId', '系统管理员',
         'https://api.oss.cqbo.com/tenyon/assets/default.png', 'admin', 0, 'tenyon@cqbo.com', '13713173611', 'admin',
         NULL, NULL, NULL, NULL, NULL, '2024-11-28 14:50:35', '2024-11-28 14:50:35', '2025-04-16 16:20:31', 0);
-INSERT INTO `sys_user`
+INSERT INTO `user`
 VALUES (2, 'user', '492a65bef0ab2fac75758f004f3eaf35', '', '', '用户',
         'https://api.oss.cqbo.com/tenyon/assets/default.png', 'user', 1, NULL, NULL, 'user', NULL, NULL, NULL,
         NULL,

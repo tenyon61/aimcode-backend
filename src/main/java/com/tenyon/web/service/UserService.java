@@ -3,7 +3,7 @@ package com.tenyon.web.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.tenyon.web.domain.dto.user.UserQueryDTO;
-import com.tenyon.web.domain.entity.SysUser;
+import com.tenyon.web.domain.entity.User;
 import com.tenyon.web.domain.vo.user.LoginUserVO;
 import com.tenyon.web.domain.vo.user.UserVO;
 
@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * 用户服务
  */
-public interface SysUserService extends IService<SysUser> {
+public interface UserService extends IService<User> {
 
     /**
      * 用户登录
@@ -37,17 +37,17 @@ public interface SysUserService extends IService<SysUser> {
     /**
      * 用户注册
      *
-     * @param sysUser 用户实体
+     * @param user 用户实体
      * @return 新用户 id
      */
-    Long register(SysUser sysUser);
+    Long register(User user);
 
     /**
      * 获取当前登录用户
      *
      * @return 当前登录用户
      */
-    SysUser getLoginUser();
+    User getLoginUser();
 
     /**
      * 用户注销
@@ -61,23 +61,23 @@ public interface SysUserService extends IService<SysUser> {
      *
      * @return LoginUserVO
      */
-    LoginUserVO getLoginUserVO(SysUser sysUser);
+    LoginUserVO getLoginUserVO(User user);
 
     /**
      * 获取脱敏的用户信息
      *
-     * @param sysUser 用户实体
+     * @param user 用户实体
      * @return UserVO
      */
-    UserVO getUserVO(SysUser sysUser);
+    UserVO getUserVO(User user);
 
     /**
      * 获取脱敏的用户信息
      *
-     * @param sysUserList 用户列表
+     * @param userList 用户列表
      * @return List<UserVO>
      */
-    List<UserVO> getUserVOList(List<SysUser> sysUserList);
+    List<UserVO> getUserVOList(List<User> userList);
 
     /**
      * 获取查询条件
@@ -85,7 +85,7 @@ public interface SysUserService extends IService<SysUser> {
      * @param userQueryDTO 用户查询请求
      * @return sql 查询条件
      */
-    QueryWrapper<SysUser> getQueryWrapper(UserQueryDTO userQueryDTO);
+    QueryWrapper<User> getQueryWrapper(UserQueryDTO userQueryDTO);
 
     /**
      * 根据openId获取用户
@@ -93,7 +93,7 @@ public interface SysUserService extends IService<SysUser> {
      * @param mpOpenId 微信开放平台 id
      * @return User
      */
-    SysUser getUserByMpOpenId(String mpOpenId);
+    User getUserByMpOpenId(String mpOpenId);
 
     String login(Long uid);
 }

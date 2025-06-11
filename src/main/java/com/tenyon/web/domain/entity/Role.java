@@ -6,82 +6,58 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 菜单权限表
+ * 角色信息表
  *
- * @TableName menu
+ * @TableName role
  */
-@TableName(value = "sys_menu")
+@TableName(value = "role")
 @Data
-public class SysMenu implements Serializable {
+public class Role implements Serializable {
     /**
-     * 菜单ID
+     * 角色ID
      */
     @TableId(type = IdType.AUTO)
     private Long id;
 
     /**
-     * 菜单名称
+     * 角色名称
      */
-    private String menuName;
+    private String roleName;
 
     /**
-     * 父菜单ID
+     * 角色权限字符串
      */
-    private Long parentId;
+    private String roleKey;
 
     /**
      * 显示顺序
      */
-    private Integer orderNum;
+    private Integer roleSort;
 
     /**
-     * 路由地址
+     * 数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）
      */
-    private String path;
+    private String dataScope;
 
     /**
-     * 组件路径
+     * 菜单树选择项是否关联显示
      */
-    private String component;
+    private Integer menuCheckStrictly;
 
     /**
-     * 是否为外链（0是 1否）
+     * 部门树选择项是否关联显示
      */
-    private Integer isFrame;
+    private Integer deptCheckStrictly;
 
     /**
-     * 是否缓存（0缓存 1不缓存）
-     */
-    private Integer isCache;
-
-    /**
-     * 菜单类型（M目录 C菜单 F按钮）
-     */
-    private String menuType;
-
-    /**
-     * 菜单状态（0显示 1隐藏）
-     */
-    private Integer visible;
-
-    /**
-     * 菜单状态（0正常 1停用）
+     * 角色状态（0正常 1停用）
      */
     private Integer status;
-
-    /**
-     * 权限标识
-     */
-    private String perms;
-
-    /**
-     * 菜单图标
-     */
-    private String icon;
 
     /**
      * 创建者
@@ -108,6 +84,12 @@ public class SysMenu implements Serializable {
      */
     private String remark;
 
+    /**
+     * 删除标志（0代表存在 1代表删除）
+     */
+    private Integer isDelete;
+
+    @Serial
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }
